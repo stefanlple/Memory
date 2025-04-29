@@ -19,9 +19,9 @@ struct ContentView: View {
             case .spooky:
                 return ["👻", "🎃", "🕸️", "🧛", "🕷️", "🧟", "🪦"]
             case .nature:
-                return ["🌲", "🌻", "🌈", "🌼", "🍄", "🐝", "🐦"]
+                return ["🌲", "🌻", "🌈", "🌼", "🍄", "🐦"]
             case .space:
-                return ["🚀", "🛸", "🌌", "👨‍🚀", "🪐", "🌕", "🌠"]
+                return ["🚀", "🛸", "🪐", "🌕", "🌠"]
             }
         }
     }
@@ -33,17 +33,21 @@ struct ContentView: View {
     var body: some View {
         VStack{
             Text("Memorize!").font(.largeTitle)
-            cards
+            card()
             Spacer()
             themeSwitch
         }.padding()
     }
     
-    var cards: some View {
-        ScrollView{
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]){
-                ForEach(0..<activeTheme.emojis.count, id: \.self){ index in
-                    cardView(content: activeTheme.emojis[index]).aspectRatio(2/3, contentMode: .fit)
+    
+    func card() -> some View {
+        var allPairs = activeTheme.emojis + activeTheme.emojis
+        allPairs.shuffle()
+        
+        return ScrollView{
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))]){
+                ForEach(0..<allPairs.count, id: \.self){ index in
+                    cardView(content: allPairs[index]).aspectRatio(2/3, contentMode: .fit)
                 }
             }
         }
@@ -51,8 +55,10 @@ struct ContentView: View {
     
     var themeSwitch : some View {
         HStack{
+            Spacer()
             ForEach(Theme.allCases, id: \.self) { theme in
                 themeButton(name: theme)
+                Spacer()
             }
         }
     }
@@ -62,8 +68,8 @@ struct ContentView: View {
             activeTheme = name
         }label: {
             VStack{
-                Text(name.emojis[0])
-                Text(String(describing: name))
+                Text(name.emojis[0]).font(.title3)
+                Text(String(describing: name)).font(.caption)
             }
         }
     }
@@ -73,7 +79,7 @@ struct ContentView: View {
 
 struct cardView : View {
     let content: String
-    @State var isFaceUp = false
+    @State var isFaceUp = true
     
     var body : some View {
         ZStack{
