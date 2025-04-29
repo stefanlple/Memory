@@ -8,26 +8,62 @@
 import SwiftUI
 
 struct ContentView: View {
-  
     
-    @State var activeTheme = 0
+    enum Theme: CaseIterable {
+        case spooky
+        case nature
+        case space
+        
+        var emojis: [String] {
+            switch self {
+            case .spooky:
+                return ["👻", "🎃", "🕸️", "🧛", "🕷️", "🧟", "🪦"]
+            case .nature:
+                return ["🌲", "🌻", "🌈", "🌼", "🍄", "🐝", "🐦"]
+            case .space:
+                return ["🚀", "🛸", "🌌", "👨‍🚀", "🪐", "🌕", "🌠"]
+            }
+        }
+    }
     
+    
+    @State var activeTheme : Theme = .spooky
+
     
     var body: some View {
         VStack{
             Text("Memorize!").font(.largeTitle)
             cards
             Spacer()
-
+            themeSwitch
         }.padding()
     }
     
     var cards: some View {
         ScrollView{
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]){
-                ForEach(0..<cardCount, id: \.self){ index in
-                    cardView(content: emojiArray[index]).aspectRatio(2/3, contentMode: .fit)
+                ForEach(0..<activeTheme.emojis.count, id: \.self){ index in
+                    cardView(content: activeTheme.emojis[index]).aspectRatio(2/3, contentMode: .fit)
                 }
+            }
+        }
+    }
+    
+    var themeSwitch : some View {
+        HStack{
+            ForEach(Theme.allCases, id: \.self) { theme in
+                themeButton(name: theme)
+            }
+        }
+    }
+    
+    func themeButton(name: Theme) -> some View {
+        Button{
+            activeTheme = name
+        }label: {
+            VStack{
+                Text(name.emojis[0])
+                Text(String(describing: name))
             }
         }
     }
