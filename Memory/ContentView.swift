@@ -8,15 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
-    var emojiArray = ["😀", "🐶", "🍕", "🚗", "🏀", "🎸", "📱", "🎁"]
-    @State var cardCount = 4
-    @State private var text: String = "Enter text here..."
+  
+    
+    @State var activeTheme = 0
+    
     
     var body: some View {
         VStack{
+            Text("Memorize!").font(.largeTitle)
             cards
             Spacer()
-            cardCountAdjuster
+
         }.padding()
     }
     
@@ -30,29 +32,7 @@ struct ContentView: View {
         }
     }
     
-    func adjustCardCountButton(offset: Int, content: String) -> some View {
-        Button{
-            cardCount += offset
-        } label: {
-            Image(systemName: content)
-        }.disabled(cardCount + offset < 1 || cardCount + offset > emojiArray.count)
-    }
     
-    var cardCountAdjuster : some View {
-        HStack{
-            removeButton
-            Spacer()
-            addButton
-        }.padding()
-    }
-    
-    var removeButton : some View {
-        adjustCardCountButton(offset: -1, content: "minus.circle")
-    }
-    
-    var addButton : some View {
-        adjustCardCountButton(offset: 1, content: "plus.circle")
-    }
 }
 
 struct cardView : View {
