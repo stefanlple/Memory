@@ -57,15 +57,41 @@ struct ContentView: View {
         var allPairs = slicedArray + slicedArray
         allPairs.shuffle()
         
-        
-        return ScrollView{
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]){
-                ForEach(0..<allPairs.count, id: \.self){ index in
-                    cardView(content: allPairs[index], color: activeTheme.color).aspectRatio(2/3, contentMode: .fit)
+        return GeometryReader { geometry in
+            let totalWidth = geometry.size.width
+            
+            let widthThatBestFit: CGFloat = {
+                let column: Int = switch number {
+                case 1...2:
+                    2
+                case 3...4:
+                    3
+                default:
+                    4
                 }
+                
+                return (totalWidth - (CGFloat(column + 1) * 2)) / CGFloat(column)
+            }()
+            
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: widthThatBestFit))]) {
+                    ForEach(0..<allPairs.count, id: \.self) { index in
+                        cardView(content: allPairs[index], color: activeTheme.color)
+                            .aspectRatio(2/3, contentMode: .fit)
+                    }
+                }
+                .padding(.horizontal)
             }
         }
-    }
+        }
+//        return ScrollView{
+//            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]){
+//                ForEach(0..<allPairs.count, id: \.self){ index in
+//                    cardView(content: allPairs[index], color: activeTheme.color).aspectRatio(2/3, contentMode: .fit)
+//                }
+//            }
+//        }
+//    }
     
     var themeSwitch : some View {
         HStack{
