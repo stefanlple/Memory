@@ -52,46 +52,19 @@ struct ContentView: View {
     
     func card() -> some View {
         let number = Int.random(in: 1...activeTheme.emojis.count)
-//        let number = 6
         let slicedArray = activeTheme.emojis[0..<number]
         var allPairs = slicedArray + slicedArray
         allPairs.shuffle()
         
-        return GeometryReader { geometry in
-            let totalWidth = geometry.size.width
-            
-            let widthThatBestFit: CGFloat = {
-                let column: Int = switch number {
-                case 1...2:
-                    2
-                case 3...4:
-                    3
-                default:
-                    4
+        
+        return ScrollView{
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]){
+                ForEach(0..<allPairs.count, id: \.self){ index in
+                    cardView(content: allPairs[index], color: activeTheme.color).aspectRatio(2/3, contentMode: .fit)
                 }
-                
-                return (totalWidth - (CGFloat(column + 1) * 2)) / CGFloat(column)
-            }()
-            
-            ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: widthThatBestFit))]) {
-                    ForEach(0..<allPairs.count, id: \.self) { index in
-                        cardView(content: allPairs[index], color: activeTheme.color)
-                            .aspectRatio(2/3, contentMode: .fit)
-                    }
-                }
-                .padding(.horizontal)
             }
         }
-        }
-//        return ScrollView{
-//            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]){
-//                ForEach(0..<allPairs.count, id: \.self){ index in
-//                    cardView(content: allPairs[index], color: activeTheme.color).aspectRatio(2/3, contentMode: .fit)
-//                }
-//            }
-//        }
-//    }
+    }
     
     var themeSwitch : some View {
         HStack{
