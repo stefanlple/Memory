@@ -51,11 +51,15 @@ struct ContentView: View {
     
     
     func card() -> some View {
-        var allPairs = activeTheme.emojis + activeTheme.emojis
+        let number = Int.random(in: 1...activeTheme.emojis.count)
+//        let number = 6
+        let slicedArray = activeTheme.emojis[0..<number]
+        var allPairs = slicedArray + slicedArray
         allPairs.shuffle()
         
+        
         return ScrollView{
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))]){
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]){
                 ForEach(0..<allPairs.count, id: \.self){ index in
                     cardView(content: allPairs[index], color: activeTheme.color).aspectRatio(2/3, contentMode: .fit)
                 }
