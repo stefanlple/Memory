@@ -24,6 +24,16 @@ struct ContentView: View {
                 return ["🚀", "🛸", "🪐", "🌕", "🌠"]
             }
         }
+        var color: Color {
+            switch self {
+            case .spooky:
+                    .black
+            case .nature:
+                    .green
+            case .space:
+                    .orange
+            }
+        }
     }
     
     
@@ -47,7 +57,7 @@ struct ContentView: View {
         return ScrollView{
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))]){
                 ForEach(0..<allPairs.count, id: \.self){ index in
-                    cardView(content: allPairs[index]).aspectRatio(2/3, contentMode: .fit)
+                    cardView(content: allPairs[index], color: activeTheme.color).aspectRatio(2/3, contentMode: .fit)
                 }
             }
         }
@@ -79,12 +89,13 @@ struct ContentView: View {
 
 struct cardView : View {
     let content: String
+    let color: Color
     @State var isFaceUp = true
     
     var body : some View {
         ZStack{
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color.orange).foregroundStyle(Color.orange)
+                .fill(color).foregroundStyle(color)
             Group{
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.white).padding(2)
