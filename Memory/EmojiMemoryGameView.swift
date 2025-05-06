@@ -55,7 +55,7 @@ struct cardView : View {
                 Text(card.content)
                     .font(.largeTitle)
             }.opacity(card.isFaceUp ? 1 : 0)
-        }
+        }.opacity(card.isMatched ? 0 : 1)
     }
 }
 

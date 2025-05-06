@@ -37,7 +37,17 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             return
         }
         
-        guard let existingOpenIndex = existingOpenCardIndex  else {
+        guard cards[chosenIndex].isFaceUp != true  && cards[chosenIndex].isMatched != true else {
+            return
+        }
+    
+        guard let existingOpenIndex = existingOpenCardIndex else {
+            for i in cards.indices {
+                if !cards[i].isMatched {
+                    cards[i].isFaceUp = false
+                }
+            }
+            
             cards[chosenIndex].isFaceUp = true
             existingOpenCardIndex = chosenIndex
             return
@@ -45,18 +55,14 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         
         if cards[existingOpenIndex].content == cards[chosenIndex].content {
             cards[existingOpenIndex].isMatched = true
-            cards[chosenIndex].isFaceUp = true
             cards[chosenIndex].isMatched = true
-        } else {
-            for index in cards.indices {
-                if cards[index].isMatched != true {
-                    cards[index].isFaceUp = false
-                }
-            }
         }
+        
+        cards[chosenIndex].isFaceUp = true
+        
+        
         existingOpenCardIndex = nil
     }
-        
         
 //        if let comparedCard = existingOpenCard {
 //            if comparedCard.content == card.content {
