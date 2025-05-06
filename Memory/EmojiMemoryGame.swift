@@ -2,8 +2,6 @@
 //  EmojiMemoryGameView.swift
 //  Memory
 //
-//  Created by Stefan Le on 25.04.25.
-//
 
 import SwiftUI
 
@@ -12,7 +10,7 @@ class EmojiMemoryGame: ObservableObject{
     
     
     private static func createEmojiGame() -> MemoryGame<String> {
-        return MemoryGame<String>(numberOfPairs: 5) { (index: Int) in
+        return MemoryGame<String>(numberOfPairs: 8) { (index: Int) in
             if Theme.spooky.emojis.indices.contains(index) {
                 return Theme.spooky.emojis[index]
             } else {
@@ -53,7 +51,7 @@ class EmojiMemoryGame: ObservableObject{
         return model.cards
     }
 
-    func chose(card: MemoryGame<String>.Card){
+    func chose(_ card: MemoryGame<String>.Card){
         model.chose(card: card)
     }
     

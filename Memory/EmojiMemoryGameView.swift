@@ -2,8 +2,6 @@
 //  EmojiMemoryGameView.swift
 //  Memory
 //
-//  Created by Stefan Le on 25.04.25.
-//
 
 import SwiftUI
 
@@ -15,10 +13,16 @@ struct EmojiMemoryGameView: View {
             Text("Memorize!").font(.largeTitle)
             card().animation(.default, value: viewModel.cards)
             Spacer()
-            Button{
-                viewModel.shuffle()
-            }label: {
-                Text("Shuffle")
+            HStack{
+                Button{
+                    viewModel.shuffle()
+                }label: {
+                    Text("Shuffle")
+                }
+                Button{
+                }label: {
+                    Text("New Game")
+                }
             }
         }.padding()
     }
@@ -28,7 +32,9 @@ struct EmojiMemoryGameView: View {
         return ScrollView{
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]){
                 ForEach(viewModel.cards){ card in
-                    cardView(card: card).aspectRatio(2/3, contentMode: .fit)
+                    cardView(card: card).aspectRatio(2/3, contentMode: .fit).onTapGesture {
+                        viewModel.chose(card)
+                    }
                 }
             }
         }

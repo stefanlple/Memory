@@ -2,8 +2,7 @@
 //  EmojiMemoryGameView.swift
 //  Memory
 //
-//  Created by Stefan Le on 25.04.25.
-//
+
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: [Card] = []
     
@@ -25,15 +24,56 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             return "[\(content), \(isFaceUp ?  "up": "down"), \(isMatched)]"
         }
         
-        var isFaceUp = true
+        var isFaceUp = false
         var isMatched = false
         var content: CardContent
         var id: String
     }
     
-    func chose(card: Card){
+    private var existingOpenCardIndex: Int?
+    
+    mutating func chose(card: Card){
+        guard let chosenIndex = cards.firstIndex(where: {$0.id == card.id}) else {
+            return
+        }
         
+        guard let existingOpenIndex = existingOpenCardIndex  else {
+            cards[chosenIndex].isFaceUp = true
+            existingOpenCardIndex = chosenIndex
+            return
+        }
+        
+        if cards[existingOpenIndex].content == cards[chosenIndex].content {
+            cards[existingOpenIndex].isMatched = true
+            cards[chosenIndex].isFaceUp = true
+            cards[chosenIndex].isMatched = true
+        } else {
+            for index in cards.indices {
+                if cards[index].isMatched != true {
+                    cards[index].isFaceUp = false
+                }
+            }
+        }
+        existingOpenCardIndex = nil
     }
+        
+        
+//        if let comparedCard = existingOpenCard {
+//            if comparedCard.content == card.content {
+//                card.isFaceUp = true
+//                card.isMatched = true
+//                existingOpenCard?.isMatched = true
+//            }else{
+//                cards.filter{_ in card.isMatched != true}.map{card in card.isFaceUp = false}
+//                
+//            }
+//        }else {
+//            existingOpenCard = card
+//        }
+// chose a card
+// check if the card is the only card
+// check for content of the
+//    }
     
     mutating func shuffle(){
         cards.shuffle()
