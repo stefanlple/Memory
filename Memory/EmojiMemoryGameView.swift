@@ -25,16 +25,10 @@ struct EmojiMemoryGameView: View {
     
     
     func card() -> some View {
-//        let number = Int.random(in: 1...activeTheme.emojis.count)
-//        let slicedArray = activeTheme.emojis[0..<number]
-//        var allPairs = slicedArray + slicedArray
-//        allPairs.shuffle()
-        
-        
         return ScrollView{
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]){
-                ForEach(0..<viewModel.cards.count, id: \.self){ index in
-                    cardView(card: viewModel.cards[index]).aspectRatio(2/3, contentMode: .fit)
+                ForEach(viewModel.cards){ card in
+                    cardView(card: card).aspectRatio(2/3, contentMode: .fit)
                 }
             }
         }
@@ -63,4 +57,3 @@ struct cardView : View {
 #Preview {
     EmojiMemoryGameView()
 }
-
