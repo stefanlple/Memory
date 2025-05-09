@@ -12,7 +12,8 @@ struct EmojiMemoryGameView: View {
         VStack{
             Text("Memorize!").font(.largeTitle)
             Text(viewModel.currentTheme.name).font(.largeTitle)
-            card().animation(.default, value: viewModel.cards)
+            Text(viewModel.score).font(.largeTitle)
+            card().animation(.default, value: viewModel.cards )
             Spacer()
             HStack{
                 Button{
@@ -58,7 +59,7 @@ struct cardView : View {
                 Text(card.content)
                     .font(.largeTitle)
             }.opacity(card.isFaceUp ? 1 : 0)
-        }.opacity(card.isMatched ? 0 : 1)
+        }.opacity(card.isMatched ? 0 : 1).animation(.easeInOut(duration: 1), value: card.isMatched)
     }
 }
 
