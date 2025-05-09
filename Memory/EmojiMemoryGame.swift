@@ -16,19 +16,17 @@ class EmojiMemoryGame: ObservableObject{
     }
     
     static private let themes: [String: Theme] = [
-        "spooky": Theme(name: "spooky", color: .black, emojis: ["👻", "🎃", "🕸️", "🧛", "🕷️", "🧟", "🪦"], numberOfPairs: 4),
-        "nature": Theme(name: "nature", color: .green, emojis: ["🌲", "🌻", "🌈", "🌼", "🍄", "🐦", "📷"], numberOfPairs: 5),
-        "space": Theme(name: "space", color: .orange, emojis: ["🚀", "🛸", "🪐", "🌕", "🌠", "☄️", "👾"], numberOfPairs: 6)
+        "spooky": Theme(name: "spooky", color: AnyShapeStyle(Color.black), emojis: ["👻", "🎃", "🕸️", "🧛", "🕷️", "🧟", "🪦"], numberOfPairs: 4),
+        "nature": Theme(name: "nature", color: AnyShapeStyle(Color.green), emojis: ["🌲", "🌻", "🌈", "🌼", "🍄", "🐦", "📷"], numberOfPairs: 5),
+        "space": Theme(name: "space", color: AnyShapeStyle(Color.orange), emojis: ["🚀", "🛸", "🪐", "🌕", "🌠", "☄️", "👾"], numberOfPairs: 6),
+        "hearts": Theme(name: "hearts", color: AnyShapeStyle(LinearGradient(colors: [.red, .blue], startPoint: .top, endPoint: .bottom)), emojis: ["💘","💝","💖","💗","💓","💞","💕","💟","❣️","💔","❤️"])
     ]
     
     private static func createEmojiGame(using theme: Theme) -> MemoryGame<String> {
-        return MemoryGame<String>(numberOfPairs: min(theme.numberOfPairs, theme.emojis.count)) { index in
-            if theme.emojis.indices.contains(index) {
-                return theme.emojis[index]
-            } else{
-                return "N/A"
-            }
-            
+        let numberOfPairs: Int = theme.numberOfPairs ?? Int.random(in: 2..<theme.emojis.count)
+    
+        return MemoryGame<String>(numberOfPairs: numberOfPairs) { index in
+            return  theme.emojis.indices.contains(index) ? theme.emojis[index] : "N/A"
         }
     }
     
@@ -38,11 +36,12 @@ class EmojiMemoryGame: ObservableObject{
         }
     }
     
+    
     struct Theme {
         let name: String
-        let color: Color
+        let color: AnyShapeStyle
         let emojis: [String]
-        let numberOfPairs: Int
+        var numberOfPairs: Int?
     }
     
     var cards: [MemoryGame<String>.Card] {

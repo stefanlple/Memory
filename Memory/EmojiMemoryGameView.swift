@@ -47,7 +47,8 @@ struct EmojiMemoryGameView: View {
 
 struct cardView : View {
     let card: MemoryGame<String>.Card
-    let color: Color
+    let color: AnyShapeStyle
+    
     
     var body : some View {
         ZStack{

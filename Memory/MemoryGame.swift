@@ -2,10 +2,12 @@
 //  EmojiMemoryGameView.swift
 //  Memory
 //
+import Foundation
 
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: [Card] = []
     private(set) var score: Int = 0
+    private var timer: Date = Date.now
     
     private var seenSet = Set<Card>();
     
@@ -17,6 +19,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         }
         cards.shuffle()
     }
+    
     
     struct Card: CustomStringConvertible, Equatable, Identifiable, Hashable{
         var isFaceUp = false
@@ -33,7 +36,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         }
         
         var description: String {
-            return "[\(content), \(isFaceUp ?  "up": "down"), \(isMatched)]"
+            return "[\(content), \(isFaceUp ?  "up": "down"), \(isMatched), \(id)]"
         }
         
     }
@@ -73,29 +76,52 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     
         guard let existingOpenIndex = existingOpenCardIndex else {
             existingOpenCardIndex = chosenIndex
+            startTimer()
             return
         }
         
         if cards[existingOpenIndex].content == cards[chosenIndex].content {
             cards[existingOpenIndex].isMatched = true
             cards[chosenIndex].isMatched = true
-            adjustScore(by: 2)
+            
+            // Calculate match time penalty
+            // min: 1 to avoid divison by 0
+            let difference = clamp(value: resetTimerAndGetDifference(), min: 1, max: 5)
+            let scoreAddition = 200 / difference
+            adjustScore(by: scoreAddition)
         }
         
         if seenSet.contains(cards[chosenIndex]) || seenSet.contains(cards[existingOpenIndex]){
-            adjustScore(by: -1)
+            adjustScore(by: -100)
         }
         
         cards[chosenIndex].isFaceUp = true
-        
-        if !seenSet.contains(card){
-            seenSet.insert(card)
-        }
+        startTimer()
+        seenSet.insert(card)
     }
             
     mutating func shuffle(){
         cards.shuffle()
         print(cards)
+    }
+    
+    private mutating func startTimer(){
+        timer = Date.now
+    }
+    
+    private mutating func resetTimerAndGetDifference() -> Int {
+        let nowDate = Date.now
+        let difference = nowDate.timeIntervalSince(timer)
+        timer = nowDate
+        return Int(difference)
+    }
+    
+    private func clamp<T: Comparable>(value: T,  min: T,  max: T?) -> T{
+        if let max = max {
+            return Swift.max(min, Swift.min(value,max))
+        } else {
+            return Swift.max(value,min)
+        }
     }
 }
 
