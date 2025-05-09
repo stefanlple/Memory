@@ -19,6 +19,7 @@ struct EmojiMemoryGameView: View {
                 }label: {
                     Text("Shuffle")
                 }
+                Spacer()
                 Button{
                 }label: {
                     Text("New Game")

@@ -6,6 +6,7 @@
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: [Card] = []
     
+    
     init(numberOfPairs: Int, cardFactory: (_ position: Int) -> CardContent){
         for index in 0..<numberOfPairs {
             let content = cardFactory(index)
@@ -30,7 +31,24 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         var id: String
     }
     
-    private var existingOpenCardIndex: Int?
+    private var existingOpenCardIndex: Int? {
+        get{
+            let matchingIndex = cards.indices.filter{index in !cards[index].isMatched && cards[index].isFaceUp}.only
+            return matchingIndex
+        }
+        
+        set{
+            cards.indices.forEach { i in
+                if i == newValue {
+                    cards[i].isFaceUp = true
+                } else {
+                    if !cards[i].isMatched{
+                        cards[i].isFaceUp = false
+                    }
+                }
+            }
+        }
+    }
     
     mutating func chose(card: Card){
         guard let chosenIndex = cards.firstIndex(where: {$0.id == card.id}) else {
@@ -42,13 +60,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         }
     
         guard let existingOpenIndex = existingOpenCardIndex else {
-            for i in cards.indices {
-                if !cards[i].isMatched {
-                    cards[i].isFaceUp = false
-                }
-            }
-            
-            cards[chosenIndex].isFaceUp = true
             existingOpenCardIndex = chosenIndex
             return
         }
@@ -59,30 +70,16 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         }
         
         cards[chosenIndex].isFaceUp = true
-        
-        
-        existingOpenCardIndex = nil
     }
-        
-//        if let comparedCard = existingOpenCard {
-//            if comparedCard.content == card.content {
-//                card.isFaceUp = true
-//                card.isMatched = true
-//                existingOpenCard?.isMatched = true
-//            }else{
-//                cards.filter{_ in card.isMatched != true}.map{card in card.isFaceUp = false}
-//                
-//            }
-//        }else {
-//            existingOpenCard = card
-//        }
-// chose a card
-// check if the card is the only card
-// check for content of the
-//    }
-    
+            
     mutating func shuffle(){
         cards.shuffle()
         print(cards)
+    }
+}
+
+extension Array {
+    var only : Element?  {
+        count == 1 ? first : nil
     }
 }
