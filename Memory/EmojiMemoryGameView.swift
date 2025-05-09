@@ -11,6 +11,7 @@ struct EmojiMemoryGameView: View {
     var body: some View {
         VStack{
             Text("Memorize!").font(.largeTitle)
+            Text(viewModel.currentTheme.name).font(.largeTitle)
             card().animation(.default, value: viewModel.cards)
             Spacer()
             HStack{
@@ -21,9 +22,10 @@ struct EmojiMemoryGameView: View {
                 }
                 Spacer()
                 Button{
+                    viewModel.startNewGame()
                 }label: {
                     Text("New Game")
-                }
+            }
             }
         }.padding()
     }
@@ -33,7 +35,7 @@ struct EmojiMemoryGameView: View {
         return ScrollView{
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]){
                 ForEach(viewModel.cards){ card in
-                    cardView(card: card).aspectRatio(2/3, contentMode: .fit).onTapGesture {
+                    cardView(card: card, color: viewModel.currentTheme.color).aspectRatio(2/3, contentMode: .fit).onTapGesture {
                         viewModel.chose(card)
                     }
                 }
@@ -44,7 +46,7 @@ struct EmojiMemoryGameView: View {
 
 struct cardView : View {
     let card: MemoryGame<String>.Card
-    let color: Color = .orange
+    let color: Color
     
     var body : some View {
         ZStack{

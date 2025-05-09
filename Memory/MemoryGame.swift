@@ -6,14 +6,13 @@
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: [Card] = []
     
-    
     init(numberOfPairs: Int, cardFactory: (_ position: Int) -> CardContent){
         for index in 0..<numberOfPairs {
             let content = cardFactory(index)
             cards.append(Card(content: content, id: "\(index)a"))
             cards.append(Card(content: content, id: "\(index)b"))
         }
-        print(cards)
+        cards.shuffle()
     }
     
     struct Card: CustomStringConvertible, Equatable, Identifiable{

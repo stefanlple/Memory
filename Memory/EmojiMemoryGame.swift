@@ -6,47 +6,45 @@
 import SwiftUI
 
 class EmojiMemoryGame: ObservableObject{
-    @Published private var model: MemoryGame<String> = createEmojiGame()
+    @Published private var model: MemoryGame<String>
     
+    private(set) var currentTheme: Theme
     
-    private static func createEmojiGame() -> MemoryGame<String> {
-        return MemoryGame<String>(numberOfPairs: 8) { (index: Int) in
-            if Theme.spooky.emojis.indices.contains(index) {
-                return Theme.spooky.emojis[index]
-            } else {
+    init(themeName: String = "spooky"){
+        currentTheme = EmojiMemoryGame.themes[themeName]!
+        model = EmojiMemoryGame.createEmojiGame(using: currentTheme)
+    }
+    
+    static private let themes: [String: Theme] = [
+        "spooky": Theme(name: "spooky", color: .black, emojis: ["👻", "🎃", "🕸️", "🧛", "🕷️", "🧟", "🪦"], numberOfPairs: 4),
+        "nature": Theme(name: "nature", color: .green, emojis: ["🌲", "🌻", "🌈", "🌼", "🍄", "🐦", "📷"], numberOfPairs: 5),
+        "space": Theme(name: "space", color: .orange, emojis: ["🚀", "🛸", "🪐", "🌕", "🌠", "☄️", "👾"], numberOfPairs: 6)
+    ]
+    
+    private static func createEmojiGame(using theme: Theme) -> MemoryGame<String> {
+        return MemoryGame<String>(numberOfPairs: min(theme.numberOfPairs, theme.emojis.count)) { index in
+            if theme.emojis.indices.contains(index) {
+                return theme.emojis[index]
+            } else{
                 return "N/A"
             }
+            
         }
     }
     
-    private enum Theme: CaseIterable {
-        case spooky
-        case nature
-        case space
-        
-        var emojis: [String] {
-            switch self {
-            case .spooky:
-                return ["👻", "🎃", "🕸️", "🧛", "🕷️", "🧟", "🪦"]
-            case .nature:
-                return ["🌲", "🌻", "🌈", "🌼", "🍄", "🐦"]
-            case .space:
-                return ["🚀", "🛸", "🪐", "🌕", "🌠"]
-            }
-        }
-        var color: Color {
-            switch self {
-            case .spooky:
-                    .black
-            case .nature:
-                    .green
-            case .space:
-                    .orange
-            }
+     private func choseRandomTheme() {
+         if let theme = EmojiMemoryGame.themes.values.randomElement() {
+            currentTheme = theme
         }
     }
-        
-//    @State var activeTheme : Theme = .spooky
+    
+    struct Theme {
+        let name: String
+        let color: Color
+        let emojis: [String]
+        let numberOfPairs: Int
+    }
+    
     var cards: [MemoryGame<String>.Card] {
         return model.cards
     }
@@ -59,4 +57,8 @@ class EmojiMemoryGame: ObservableObject{
         model.shuffle()
     }
     
+    func startNewGame(){
+        choseRandomTheme()
+        model = EmojiMemoryGame.createEmojiGame(using: currentTheme)
+    }
 }
